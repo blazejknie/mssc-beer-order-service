@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "blazej.brewery.beer-service-host",
+      "type": "java.lang.String",
+      "description": "Description for blazej.brewery.beer-service-host."
+  }
+] }

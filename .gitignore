@@ -68,6 +68,7 @@ local.properties
 # Maven
 ######################
 target
+target/**
 /log/
 */target/**
 ######################
@@ -141,3 +142,4 @@ Desktop.ini
 .eslintcache
 /.idea/
 
+/target/
