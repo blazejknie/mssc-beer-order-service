@@ -1,6 +1,7 @@
-package guru.sfg.beer.order.service.services.beer;
+package guru.sfg.brewery.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -23,26 +23,26 @@ import java.util.UUID;
 public class BeerDto implements Serializable {
 
     static final long serialVersionUID = -4849675281538690355L;
-    @Null
-    private UUID id;
+    @JsonProperty("id")
+    private UUID id = null;
 
-    @Null
-    private Integer version;
+    @JsonProperty("version")
+    private Integer version = null;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
-    @Null
-    private OffsetDateTime createdDate;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssZ", shape=JsonFormat.Shape.STRING)
+    @JsonProperty("createdDate")
+    private OffsetDateTime createdDate = null;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
-    @Null
-    private OffsetDateTime lastUpdatedDate;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssZ", shape=JsonFormat.Shape.STRING)
+    @JsonProperty("lastModifiedDate")
+    private OffsetDateTime lastModifiedDate = null;
 
     @NotBlank
     @Size(min = 3, max = 100)
     private String beerName;
 
     @NotNull
-    private BeerStyle beerStyle;
+    private String beerStyle;
 
     @NotBlank
     private String upc;
