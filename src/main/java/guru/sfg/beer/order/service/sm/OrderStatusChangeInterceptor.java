@@ -13,7 +13,6 @@ import org.springframework.statemachine.state.State;
 import org.springframework.statemachine.support.StateMachineInterceptorAdapter;
 import org.springframework.statemachine.transition.Transition;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -21,14 +20,19 @@ import java.util.UUID;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class OrderStatusChangeInterceptor extends StateMachineInterceptorAdapter<BeerOrderStatusEnum, BeerOrderEventEnum> {
+public class OrderStatusChangeInterceptor extends StateMachineInterceptorAdapter<BeerOrderStatusEnum,
+        BeerOrderEventEnum> {
 
     private final BeerOrderRepository beerOrderRepository;
 
     @Override
-    public void preStateChange(State<BeerOrderStatusEnum, BeerOrderEventEnum> state, Message<BeerOrderEventEnum> message, Transition<BeerOrderStatusEnum, BeerOrderEventEnum> transition, StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> stateMachine, StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> rootStateMachine) {
+    public void preStateChange(State<BeerOrderStatusEnum, BeerOrderEventEnum> state,
+                               Message<BeerOrderEventEnum> message, Transition<BeerOrderStatusEnum,
+            BeerOrderEventEnum> transition, StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> stateMachine,
+                               StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> rootStateMachine) {
         Optional.of(message)
-                .flatMap(msg -> Optional.ofNullable((String) message.getHeaders().getOrDefault(BeerOrderManager.BEER_ORDER_HEADER, " ")))
+                .flatMap(msg -> Optional.ofNullable(
+                        (String) message.getHeaders().getOrDefault(BeerOrderManager.BEER_ORDER_HEADER, " ")))
                 .ifPresent(orderId -> {
                     log.debug("Saving state for order id: " + orderId + " Status: " + state.getId());
                     BeerOrder beerOrder = beerOrderRepository.findById(UUID.fromString(orderId))

@@ -11,6 +11,11 @@ import org.springframework.jms.support.converter.MessageType;
 @AllArgsConstructor
 public class JmsConfig {
 
+    public static final String VALIDATE_ORDER_QUEUE_NAME = "validate-order";
+    public static final String VALIDATE_ORDER_RESULT_QUEUE_NAME = "validate-order-result";
+    public static final String ALLOCATE_ORDER_QUEUE_NAME = "allocate-order";
+    public static final String ALLOCATE_ORDER_RESULT_QUEUE_NAME = "allocate-order-result";
+
     @Bean
     public MessageConverter messageConverter() {
 
