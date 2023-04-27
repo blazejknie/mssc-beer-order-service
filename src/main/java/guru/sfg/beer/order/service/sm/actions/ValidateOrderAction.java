@@ -42,10 +42,9 @@ public class ValidateOrderAction implements Action<BeerOrderStatusEnum, BeerOrde
 
         BeerOrderDto beerOrderDto = beerOrderMapper.beerOrderToDto(beerOrder);
 
-        Message<ValidateBeerOrderRequest> msg = MessageBuilder.withPayload(new ValidateBeerOrderRequest(beerOrderDto))
-                                                              .build();
+        ValidateBeerOrderRequest payload = new ValidateBeerOrderRequest(beerOrderDto);
 
-        jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_QUEUE_NAME, msg);
+        jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_QUEUE_NAME, payload);
     }
 
     private BeerOrder getBeerOrder(String orderId) {

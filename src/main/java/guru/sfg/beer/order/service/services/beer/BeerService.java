@@ -6,6 +6,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BeerService {
+
+  void setBeerServiceHost(String beerServiceHost);
+
   Optional<BeerDto> fetchBeerByUpc(String upc);
 
   Optional<BeerDto> fetchBeerById(UUID id);

@@ -8,6 +8,7 @@ import guru.sfg.beer.order.service.sm.OrderStatusChangeInterceptor;
 import guru.sfg.brewery.model.BeerOrderDto;
 import guru.sfg.brewery.model.BeerOrderLineDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
@@ -20,6 +21,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BeerOrderManagerImpl implements BeerOrderManager {
@@ -33,8 +35,8 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     public BeerOrder newBeerOrder(BeerOrder beerOrder) {
         beerOrder.setId(null);
         beerOrder.setOrderStatus(BeerOrderStatusEnum.NEW);
-
-        BeerOrder savedOrder = beerOrderRepository.save(beerOrder);
+        BeerOrder savedOrder = beerOrderRepository.saveAndFlush(beerOrder);
+        log.debug("saved new Beer Order: " + beerOrder);
         sendBeerOrderEvent(savedOrder, BeerOrderEventEnum.VALIDATE_ORDER);
         return savedOrder;
     }
