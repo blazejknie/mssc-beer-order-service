@@ -16,12 +16,22 @@ public class BeerOrderAllocationTestListener {
 
     @JmsListener(destination = JmsConfig.ALLOCATE_ORDER_QUEUE_NAME)
     public void listen(AllocateOrderRequest request) {
+        String orderStatusCallbackUrl = request.getBeerOrderDto().getOrderStatusCallbackUrl();
+        boolean allocationError = orderStatusCallbackUrl != null && orderStatusCallbackUrl.equals("failed-allocation");
+        boolean partialAllocation = orderStatusCallbackUrl != null && orderStatusCallbackUrl.equals("partial-allocation");
+
         BeerOrderDto beerOrderDto = request.getBeerOrderDto();
-        beerOrderDto.getBeerOrderLines().forEach(line -> line.setQuantityAllocated(line.getOrderQuantity()));
+        beerOrderDto.getBeerOrderLines().forEach(line -> {
+            if (partialAllocation) {
+                line.setQuantityAllocated(line.getOrderQuantity() - 1);
+            } else {
+                line.setQuantityAllocated(line.getOrderQuantity());
+            }
+        });
         AllocationOrderResponse response = AllocationOrderResponse.builder()
                                                                .beerOrderDto(beerOrderDto)
-                                                               .isAllocationError(false)
-                                                               .isPendingInventory(false)
+                                                               .isAllocationError(allocationError)
+                                                               .isPendingInventory(partialAllocation)
                                                                .build();
 
         jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_RESULT_QUEUE_NAME, response);
