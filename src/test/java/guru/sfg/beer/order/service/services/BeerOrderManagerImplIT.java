@@ -89,6 +89,26 @@ public class BeerOrderManagerImplIT {
     }
 
     @Test
+    void test_fail_validation() throws JsonProcessingException {
+        BeerDto test_beer = BeerDto.builder().id(beerId).upc("12345").beerName("test beer").build();
+        String testBeerAsText = objectMapper.writeValueAsString(test_beer);
+
+        stubFor(get(urlEqualTo("/api/v1/beerUpc/" + "12345")).willReturn(okJson(testBeerAsText)));
+        BeerOrder beerOrder = createBeerOrder();
+        beerOrder.setOrderStatusCallbackUrl("failed-validation");
+
+        BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
+
+        await().untilAsserted(() -> {
+            BeerOrder checkOrder = beerOrderRepository.findById(beerOrder.getId())
+                                                      .orElseThrow(() -> new RuntimeException(""));
+            BeerOrderLine line = checkOrder.getBeerOrderLines().iterator().next();
+            assertNotNull(checkOrder);
+            assertEquals(BeerOrderStatusEnum.VALIDATION_EXCEPTION, checkOrder.getOrderStatus());
+        });
+    }
+
+    @Test
     void test_allocated_to_pickedUp_when_valid_order_should_pass() {
         BeerOrder beerOrder = createBeerOrder();
         beerOrder.setOrderStatus(BeerOrderStatusEnum.ALLOCATED);

@@ -18,9 +18,12 @@ public class BeerOrderValidationListener {
 
     @JmsListener(destination = JmsConfig.VALIDATE_ORDER_QUEUE_NAME)
     public void listen(@Payload ValidateBeerOrderRequest request) {
+        String orderStatusCallbackUrl = request.getBeerOrderDto().getOrderStatusCallbackUrl();
+        boolean isValid = orderStatusCallbackUrl == null || !orderStatusCallbackUrl.equals("failed-validation");
+
         log.debug("test validation request listener ran!");
 
         jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_RESULT_QUEUE_NAME,
-                ValidateBeerOrderResponse.builder().isValid(true).orderId(request.getBeerOrderDto().getId()).build());
+                ValidateBeerOrderResponse.builder().isValid(isValid).orderId(request.getBeerOrderDto().getId()).build());
     }
 }
