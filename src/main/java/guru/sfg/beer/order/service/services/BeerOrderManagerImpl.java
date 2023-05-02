@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -76,6 +77,13 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_SUCCESS);
         updateAllocatedQty(beerOrderDto);
 
+    }
+
+    @Override
+    public void pickupBeerOrder(UUID orderId) {
+        Optional<BeerOrder> orderOptional = beerOrderRepository.findById(orderId);
+        orderOptional.ifPresentOrElse(beerOrder -> sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.BEERORDER_PICKED_UP),
+                () -> log.error("No Beer Order for id:" + orderId));
     }
 
     private void updateAllocatedQty(BeerOrderDto beerOrderDto) {
