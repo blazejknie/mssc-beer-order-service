@@ -2,6 +2,7 @@ package guru.sfg.beer.order.service.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guru.sfg.beer.order.service.config.JmsConfig;
 import guru.sfg.beer.order.service.domain.BeerOrder;
 import guru.sfg.beer.order.service.domain.BeerOrderLine;
 import guru.sfg.beer.order.service.domain.BeerOrderStatusEnum;
@@ -10,12 +11,14 @@ import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.repositories.CustomerRepository;
 import guru.sfg.beer.order.service.services.beer.BeerService;
 import guru.sfg.brewery.model.BeerDto;
+import guru.sfg.brewery.model.events.AllocationFailureEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.core.env.Environment;
+import org.springframework.jms.core.JmsTemplate;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,13 +28,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-public class BeerOrderManagerImplIT {
+class BeerOrderManagerImplIT {
 
     @Autowired
     BeerService beerService;
@@ -51,6 +55,9 @@ public class BeerOrderManagerImplIT {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    JmsTemplate jmsTemplate;
+
     Customer testCustomer;
 
     UUID beerId = UUID.randomUUID();
@@ -62,7 +69,7 @@ public class BeerOrderManagerImplIT {
     }
 
     @Test
-    void testNewToAllocated() throws JsonProcessingException, InterruptedException {
+    void testNewToAllocated() throws JsonProcessingException {
         BeerDto test_beer = BeerDto.builder().id(beerId).upc("12345").beerName("test beer").build();
         String testBeerAsText = objectMapper.writeValueAsString(test_beer);
 
@@ -125,7 +132,13 @@ public class BeerOrderManagerImplIT {
             BeerOrderLine line = checkOrder.getBeerOrderLines().iterator().next();
             assertNotNull(checkOrder);
             assertEquals(BeerOrderStatusEnum.ALLOCATION_EXCEPTION, checkOrder.getOrderStatus());
+
         });
+
+        AllocationFailureEvent event = (AllocationFailureEvent) jmsTemplate.receiveAndConvert(
+                JmsConfig.ALLOCATE_ORDER_FAILURE_QUEUE);
+        assertNotNull(event);
+        assertThat(event.getOrderId()).isEqualTo(savedBeerOrder.getId());
     }
 
     @Test
