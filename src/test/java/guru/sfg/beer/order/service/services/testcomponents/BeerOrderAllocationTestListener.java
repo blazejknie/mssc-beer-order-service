@@ -19,21 +19,24 @@ public class BeerOrderAllocationTestListener {
         String orderStatusCallbackUrl = request.getBeerOrderDto().getOrderStatusCallbackUrl();
         boolean allocationError = orderStatusCallbackUrl != null && orderStatusCallbackUrl.equals("failed-allocation");
         boolean partialAllocation = orderStatusCallbackUrl != null && orderStatusCallbackUrl.equals("partial-allocation");
+        boolean cancelled = orderStatusCallbackUrl != null && orderStatusCallbackUrl.equals("allocation-cancelled");
 
-        BeerOrderDto beerOrderDto = request.getBeerOrderDto();
-        beerOrderDto.getBeerOrderLines().forEach(line -> {
-            if (partialAllocation) {
-                line.setQuantityAllocated(line.getOrderQuantity() - 1);
-            } else {
-                line.setQuantityAllocated(line.getOrderQuantity());
-            }
-        });
-        AllocationOrderResponse response = AllocationOrderResponse.builder()
-                                                               .beerOrderDto(beerOrderDto)
-                                                               .isAllocationError(allocationError)
-                                                               .isPendingInventory(partialAllocation)
-                                                               .build();
+        if (!cancelled) {
+            BeerOrderDto beerOrderDto = request.getBeerOrderDto();
+            beerOrderDto.getBeerOrderLines().forEach(line -> {
+                if (partialAllocation) {
+                    line.setQuantityAllocated(line.getOrderQuantity() - 1);
+                } else {
+                    line.setQuantityAllocated(line.getOrderQuantity());
+                }
+            });
+            AllocationOrderResponse response = AllocationOrderResponse.builder()
+                                                                      .beerOrderDto(beerOrderDto)
+                                                                      .isAllocationError(allocationError)
+                                                                      .isPendingInventory(partialAllocation)
+                                                                      .build();
 
-        jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_RESULT_QUEUE_NAME, response);
+            jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_RESULT_QUEUE_NAME, response);
+        }
     }
 }

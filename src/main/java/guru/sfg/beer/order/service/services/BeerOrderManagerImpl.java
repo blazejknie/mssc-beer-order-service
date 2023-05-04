@@ -85,6 +85,12 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     }
 
     @Override
+    public void cancelBeerOrder(UUID orderId) {
+        BeerOrder beerOrder = getBeerOrder(orderId);
+        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.CANCEL_ORDER);
+    }
+
+    @Override
     public void pickupBeerOrder(UUID orderId) {
         Optional<BeerOrder> orderOptional = beerOrderRepository.findById(orderId);
         orderOptional.ifPresentOrElse(beerOrder -> sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.BEERORDER_PICKED_UP),
