@@ -115,7 +115,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
 
     private BeerOrder getBeerOrder(UUID id) {
         return beerOrderRepository.findById(id)
-                                  .orElseThrow(() -> new RuntimeException("Beer Order not exists. id: " + id));
+                .orElseThrow(() -> new RuntimeException("Beer Order not exists. id: " + id));
     }
 
     private StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sendBeerOrderEvent(BeerOrder order,
@@ -123,9 +123,9 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm = build(order);
 
         Message<BeerOrderEventEnum> msg = MessageBuilder.withPayload(eventEnum)
-                                                        .setHeader(BeerOrderManager.BEER_ORDER_HEADER,
-                                                                order.getId().toString())
-                                                        .build();
+                .setHeader(BeerOrderManager.BEER_ORDER_HEADER,
+                        order.getId().toString())
+                .build();
 
         sm.sendEvent(Mono.just(msg)).subscribe();
         return sm;
@@ -148,7 +148,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
                 } else {
                     log.debug(
                             "Order Status Not Equal. Expected: " + statusEnum + " Found: " + beerOrder.getOrderStatus()
-                                                                                                      .name());
+                                    .name());
                 }
             }, () -> log.debug("order Id not Found"));
 

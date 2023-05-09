@@ -1,7 +1,6 @@
 package guru.sfg.beer.order.service.web.controllers;
 
 import guru.sfg.beer.order.service.services.CustomerService;
-import guru.sfg.brewery.model.CustomerDto;
 import guru.sfg.brewery.model.CustomerPagedList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -10,8 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

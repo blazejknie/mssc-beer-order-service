@@ -2,7 +2,6 @@ package guru.sfg.beer.order.service.services;
 
 import guru.sfg.beer.order.service.bootstrap.BeerOrderBootStrap;
 import guru.sfg.beer.order.service.domain.Customer;
-import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.repositories.CustomerRepository;
 import guru.sfg.brewery.model.BeerOrderDto;
 import guru.sfg.brewery.model.BeerOrderLineDto;
@@ -36,11 +35,11 @@ public class TastingRoomService {
 
     @Transactional
     @Scheduled(fixedRate = 2000) //run every 2 seconds
-    public void placeTastingRoomOrder(){
+    public void placeTastingRoomOrder() {
 
         List<Customer> customerList = customerRepository.findAllByCustomerNameLike(BeerOrderBootStrap.TASTING_ROOM);
 
-        if (customerList.size() == 1){ //should be just one
+        if (customerList.size() == 1) { //should be just one
             doPlaceOrder(customerList.get(0));
         } else {
             log.error("Too many or too few tasting room customers found");
@@ -51,10 +50,10 @@ public class TastingRoomService {
         String beerToOrder = getRandomBeerUpc();
 
         BeerOrderLineDto beerOrderLine = BeerOrderLineDto.builder()
-                                                         .upc(beerToOrder)
-                                                         .orderQuantity(
-                                                                 RANDOM.nextInt(6)) //todo externalize value to property
-                                                         .build();
+                .upc(beerToOrder)
+                .orderQuantity(
+                        RANDOM.nextInt(6)) //todo externalize value to property
+                .build();
 
         List<BeerOrderLineDto> beerOrderLineSet = new ArrayList<>();
         beerOrderLineSet.add(beerOrderLine);
@@ -70,6 +69,6 @@ public class TastingRoomService {
     }
 
     private String getRandomBeerUpc() {
-        return beerUpcs.get(RANDOM.nextInt(beerUpcs.size() -0));
+        return beerUpcs.get(RANDOM.nextInt(beerUpcs.size() - 0));
     }
 }

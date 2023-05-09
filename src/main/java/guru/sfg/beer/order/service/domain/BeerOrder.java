@@ -40,6 +40,14 @@ import java.util.UUID;
 @NoArgsConstructor
 public class BeerOrder extends BaseEntity {
 
+    private String customerRef;
+    @ManyToOne
+    private Customer customer;
+    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    private Set<BeerOrderLine> beerOrderLines;
+    private BeerOrderStatusEnum orderStatus = BeerOrderStatusEnum.NEW;
+    private String orderStatusCallbackUrl;
     @Builder
     public BeerOrder(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, String customerRef, Customer customer,
                      Set<BeerOrderLine> beerOrderLines, BeerOrderStatusEnum orderStatus,
@@ -51,16 +59,4 @@ public class BeerOrder extends BaseEntity {
         this.orderStatus = orderStatus;
         this.orderStatusCallbackUrl = orderStatusCallbackUrl;
     }
-
-    private String customerRef;
-
-    @ManyToOne
-    private Customer customer;
-
-    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
-    private Set<BeerOrderLine> beerOrderLines;
-
-    private BeerOrderStatusEnum orderStatus = BeerOrderStatusEnum.NEW;
-    private String orderStatusCallbackUrl;
 }

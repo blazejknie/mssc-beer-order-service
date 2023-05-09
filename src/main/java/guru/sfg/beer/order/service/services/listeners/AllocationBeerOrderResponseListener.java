@@ -22,7 +22,7 @@ public class AllocationBeerOrderResponseListener {
             beerOrderManager.beerOrderAllocationPassed(response.getBeerOrderDto());
         } else if (!response.getIsAllocationError() && response.getIsPendingInventory()) {
             beerOrderManager.beerOrderAllocationPendingInventory(response.getBeerOrderDto());
-        } else if (response.getIsAllocationError()){
+        } else if (response.getIsAllocationError()) {
             beerOrderManager.beerOrderAllocationFailed(response.getBeerOrderDto());
         }
     }

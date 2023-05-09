@@ -28,12 +28,12 @@ public class BeerServiceRestTemplateImpl implements BeerService {
 
     @Override
     public Optional<BeerDto> fetchBeerByUpc(String upc) {
-    return Optional.ofNullable(restTemplate.getForObject(beerServiceHost + BEER_PATH_UPC + upc, BeerDto.class));
+        return Optional.ofNullable(restTemplate.getForObject(beerServiceHost + BEER_PATH_UPC + upc, BeerDto.class));
 
     }
 
     @Override
     public Optional<BeerDto> fetchBeerById(UUID id) {
-       return Optional.ofNullable(restTemplate.getForObject(beerServiceHost + BEER_PATH_UPC + id, BeerDto.class));
+        return Optional.ofNullable(restTemplate.getForObject(beerServiceHost + BEER_PATH_UPC + id, BeerDto.class));
     }
 }

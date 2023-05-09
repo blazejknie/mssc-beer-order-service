@@ -31,14 +31,14 @@ public class DeallocateOrderAction implements Action<BeerOrderStatusEnum, BeerOr
         BeerOrder beerOrder = getBeerOrder(orderId);
 
         DeallocateOrderRequest request = DeallocateOrderRequest.builder()
-                                                             .beerOrderDto(mapper.beerOrderToDto(beerOrder))
-                                                             .build();
+                .beerOrderDto(mapper.beerOrderToDto(beerOrder))
+                .build();
         jmsTemplate.convertAndSend(JmsConfig.DEALLOCATE_ORDER_QUEUE_NAME, request);
         log.debug("Sent Deallocation Request for order id :" + orderId);
     }
 
     private BeerOrder getBeerOrder(String orderId) {
         return repository.findById(UUID.fromString(orderId))
-                         .orElseThrow(() -> new RuntimeException("Order not found for validarion!!! Id: " + orderId));
+                .orElseThrow(() -> new RuntimeException("Order not found for validarion!!! Id: " + orderId));
     }
 }

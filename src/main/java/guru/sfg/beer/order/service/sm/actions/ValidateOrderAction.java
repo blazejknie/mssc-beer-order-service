@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Component;
@@ -49,7 +48,7 @@ public class ValidateOrderAction implements Action<BeerOrderStatusEnum, BeerOrde
 
     private BeerOrder getBeerOrder(String orderId) {
         return beerOrderRepository.findById(UUID.fromString(orderId))
-                                  .orElseThrow(() -> new RuntimeException(
-                                          "Order not found for validarion!!! Id: " + orderId));
+                .orElseThrow(() -> new RuntimeException(
+                        "Order not found for validarion!!! Id: " + orderId));
     }
 }

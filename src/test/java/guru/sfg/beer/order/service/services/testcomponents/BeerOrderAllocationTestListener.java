@@ -31,10 +31,10 @@ public class BeerOrderAllocationTestListener {
                 }
             });
             AllocationOrderResponse response = AllocationOrderResponse.builder()
-                                                                      .beerOrderDto(beerOrderDto)
-                                                                      .isAllocationError(allocationError)
-                                                                      .isPendingInventory(partialAllocation)
-                                                                      .build();
+                    .beerOrderDto(beerOrderDto)
+                    .isAllocationError(allocationError)
+                    .isPendingInventory(partialAllocation)
+                    .build();
 
             jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_RESULT_QUEUE_NAME, response);
         }

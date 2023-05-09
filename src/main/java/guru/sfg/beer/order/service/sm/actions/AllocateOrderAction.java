@@ -31,14 +31,14 @@ public class AllocateOrderAction implements Action<BeerOrderStatusEnum, BeerOrde
         BeerOrder beerOrder = getBeerOrder(orderId);
 
         AllocateOrderRequest request = AllocateOrderRequest.builder()
-                                                           .beerOrderDto(mapper.beerOrderToDto(beerOrder))
-                                                           .build();
+                .beerOrderDto(mapper.beerOrderToDto(beerOrder))
+                .build();
         jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_QUEUE_NAME, request);
         log.debug("Sent Allocation Request for order id :" + orderId);
     }
 
     private BeerOrder getBeerOrder(String orderId) {
         return repository.findById(UUID.fromString(orderId))
-                         .orElseThrow(() -> new RuntimeException("Order not found for validarion!!! Id: " + orderId));
+                .orElseThrow(() -> new RuntimeException("Order not found for validarion!!! Id: " + orderId));
     }
 }

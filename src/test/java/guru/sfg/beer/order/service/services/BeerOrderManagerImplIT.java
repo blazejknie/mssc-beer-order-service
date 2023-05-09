@@ -25,10 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -81,7 +78,7 @@ class BeerOrderManagerImplIT {
 
         await().untilAsserted(() -> {
             BeerOrder checkOrder = beerOrderRepository.findById(beerOrder.getId())
-                                                      .orElseThrow(() -> new RuntimeException(""));
+                    .orElseThrow(() -> new RuntimeException(""));
             BeerOrderLine line = checkOrder.getBeerOrderLines().iterator().next();
             assertNotNull(checkOrder);
             assertEquals(BeerOrderStatusEnum.ALLOCATED, checkOrder.getOrderStatus());
@@ -89,7 +86,7 @@ class BeerOrderManagerImplIT {
         });
 
         savedBeerOrder = beerOrderRepository.findById(savedBeerOrder.getId())
-                                            .orElseThrow(() -> new RuntimeException(""));
+                .orElseThrow(() -> new RuntimeException(""));
 
         assertNotNull(savedBeerOrder);
 
@@ -109,7 +106,7 @@ class BeerOrderManagerImplIT {
 
         await().untilAsserted(() -> {
             BeerOrder checkOrder = beerOrderRepository.findById(beerOrder.getId())
-                                                      .orElseThrow(() -> new RuntimeException(""));
+                    .orElseThrow(() -> new RuntimeException(""));
             BeerOrderLine line = checkOrder.getBeerOrderLines().iterator().next();
             assertNotNull(checkOrder);
             assertEquals(BeerOrderStatusEnum.VALIDATION_EXCEPTION, checkOrder.getOrderStatus());
@@ -129,7 +126,7 @@ class BeerOrderManagerImplIT {
 
         await().untilAsserted(() -> {
             BeerOrder checkOrder = beerOrderRepository.findById(beerOrder.getId())
-                                                      .orElseThrow(() -> new RuntimeException(""));
+                    .orElseThrow(() -> new RuntimeException(""));
             BeerOrderLine line = checkOrder.getBeerOrderLines().iterator().next();
             assertNotNull(checkOrder);
             assertEquals(BeerOrderStatusEnum.ALLOCATION_EXCEPTION, checkOrder.getOrderStatus());
@@ -155,7 +152,7 @@ class BeerOrderManagerImplIT {
 
         await().untilAsserted(() -> {
             BeerOrder checkOrder = beerOrderRepository.findById(beerOrder.getId())
-                                                      .orElseThrow(() -> new RuntimeException(""));
+                    .orElseThrow(() -> new RuntimeException(""));
             BeerOrderLine line = checkOrder.getBeerOrderLines().iterator().next();
             assertNotNull(checkOrder);
             assertEquals(BeerOrderStatusEnum.PENDING_INVENTORY, checkOrder.getOrderStatus());
@@ -175,7 +172,7 @@ class BeerOrderManagerImplIT {
         });
 
         BeerOrder result = beerOrderRepository.findById(savedBeerOrder.getId())
-                                              .orElseThrow(() -> new RuntimeException(""));
+                .orElseThrow(() -> new RuntimeException(""));
 
         assertEquals(BeerOrderStatusEnum.PICKED_UP, result.getOrderStatus());
     }
@@ -199,9 +196,9 @@ class BeerOrderManagerImplIT {
         beerOrderManager.cancelBeerOrder(savedBeerOrder.getId());
 
         await().untilAsserted(() -> {
-                    BeerOrder order = beerOrderRepository.findById(savedBeerOrder.getId()).get();
-                    assertEquals(BeerOrderStatusEnum.CANCELLED, order.getOrderStatus());
-                });
+            BeerOrder order = beerOrderRepository.findById(savedBeerOrder.getId()).get();
+            assertEquals(BeerOrderStatusEnum.CANCELLED, order.getOrderStatus());
+        });
     }
 
     @Test
@@ -223,9 +220,9 @@ class BeerOrderManagerImplIT {
         beerOrderManager.cancelBeerOrder(savedBeerOrder.getId());
 
         await().untilAsserted(() -> {
-                    BeerOrder order = beerOrderRepository.findById(savedBeerOrder.getId()).get();
-                    assertEquals(BeerOrderStatusEnum.CANCELLED, order.getOrderStatus());
-                });
+            BeerOrder order = beerOrderRepository.findById(savedBeerOrder.getId()).get();
+            assertEquals(BeerOrderStatusEnum.CANCELLED, order.getOrderStatus());
+        });
     }
 
     @Test
@@ -240,7 +237,7 @@ class BeerOrderManagerImplIT {
 
         await().untilAsserted(() -> {
             BeerOrder checkOrder = beerOrderRepository.findById(beerOrder.getId())
-                                                      .orElseThrow(() -> new RuntimeException(""));
+                    .orElseThrow(() -> new RuntimeException(""));
             BeerOrderLine line = checkOrder.getBeerOrderLines().iterator().next();
             assertNotNull(checkOrder);
             assertEquals(BeerOrderStatusEnum.ALLOCATED, checkOrder.getOrderStatus());
@@ -251,9 +248,9 @@ class BeerOrderManagerImplIT {
         beerOrderManager.cancelBeerOrder(savedBeerOrder.getId());
 
         await().untilAsserted(() -> {
-                    BeerOrder order = beerOrderRepository.findById(savedBeerOrder.getId()).get();
-                    assertEquals(BeerOrderStatusEnum.CANCELLED, order.getOrderStatus());
-                });
+            BeerOrder order = beerOrderRepository.findById(savedBeerOrder.getId()).get();
+            assertEquals(BeerOrderStatusEnum.CANCELLED, order.getOrderStatus());
+        });
 
         DeallocateOrderRequest request = (DeallocateOrderRequest) jmsTemplate.receiveAndConvert(
                 JmsConfig.DEALLOCATE_ORDER_QUEUE_NAME);
