@@ -3,9 +3,6 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
-    <!-- Example for logging into the build folder of your project -->
-    <!--    <property name="LOG_FILE" value="${BUILD_FOLDER:-build}/${springAppName}"/>-->
-
     <!-- You can override this to have a custom pattern -->
     <property name="CONSOLE_LOG_PATTERN"
               value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
@@ -64,10 +61,10 @@
                     <pattern>
                         {
                         "trace": {
-                        "trace_id": "%mdc{X-B3-TraceId}",
-                        "span_id": "%mdc{X-B3-SpanId}",
-                        "parent_span_id": "%mdc{X-B3-ParentSpanId}",
-                        "exportable": "%mdc{X-Span-Export}"
+                        "trace_id": "%X{traceId:-}",
+                        "span_id": "%X{traceId:-}",
+                        "parent_span_id": "%X{ParentSpanId:-}",
+                        "exportable": "%X{Span-Export:-}"
                         }
                         }
                     </pattern>
